@@ -17,7 +17,7 @@ defmodule TetrisGameOpencodeWeb.Router do
   scope "/", TetrisGameOpencodeWeb do
     pipe_through :browser
 
-    live "/", GameLive, :index
+    live "/game", GameLive, :index
   end
 
   # Other scopes may use custom stacks.
