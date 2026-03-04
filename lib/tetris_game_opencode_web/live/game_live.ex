@@ -8,7 +8,7 @@ defmodule TetrisGameOpencodeWeb.GameLive do
 
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
-      <div id="game-field">{@field.width} x {@field.height}</div>
+      <div id="game-field" phx-hook="GameHook">{@field.width} x {@field.height}</div>
     </Layouts.app>
     """
   end
@@ -34,7 +34,12 @@ defmodule TetrisGameOpencodeWeb.GameLive do
 
   @impl true
   def handle_info(:tick, socket) do
-    {:noreply, push_event(socket, "tick", %{})}
+    # Move current piece down each tick and reassign
+    new_piece = Tetris.Tetromino.move_down(socket.assigns.current_piece)
+    socket = assign(socket, :current_piece, new_piece)
+    # schedule next tick
+    Process.send_after(self(), :tick, 1000)
+    {:noreply, socket}
   end
 
   @impl true
